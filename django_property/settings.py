@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'widget_tweaks',
     'django_registration',
     'base',
 ]
@@ -85,6 +86,7 @@ DATABASES = {
     }
 }
 
+# cache with redis
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
