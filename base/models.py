@@ -16,3 +16,6 @@ class BaseModel(models.Model):
 class SiteSetting(BaseModel):
     key = models.CharField(max_length=64, unique=True, verbose_name="Key")
     value = models.CharField(max_length=200, verbose_name="Value", null=True, blank=True)
+
+    def __str__(self):
+        return self.key

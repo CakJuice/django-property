@@ -1,6 +1,15 @@
+from .models import SiteSetting
+from django.core.cache import cache
+
+
 def site_info(request):
-    return {
-        'site_name': "CJ Property",
-        'meta_description': "Meta Description",
-        'meta_keywords': "django,property"
-    }
+    ctx = {}
+    if cache.has_key('settings'):
+        ctx = cache.get('settings')
+    else:
+        settings = SiteSetting.objects.all()
+        for setting in settings:
+            ctx[setting.key] = setting.value
+        cache.set('settings', ctx)
+
+    return ctx
