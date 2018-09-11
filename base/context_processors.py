@@ -3,13 +3,14 @@ from django.core.cache import cache
 
 
 def site_info(request):
-    ctx = {}
-    if cache.has_key('settings'):
-        ctx = cache.get('settings')
-    else:
-        settings = SiteSetting.objects.all()
-        for setting in settings:
-            ctx[setting.key] = setting.value
-        cache.set('settings', ctx)
+    if request.method == 'GET':
+        ctx = {}
+        if cache.has_key('settings'):
+            ctx = cache.get('settings')
+        else:
+            settings = SiteSetting.objects.all()
+            for setting in settings:
+                ctx[setting.key] = setting.value
+            cache.set('settings', ctx)
 
-    return ctx
+        return ctx
