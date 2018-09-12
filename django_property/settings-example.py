@@ -161,6 +161,11 @@ INTERNAL_IPS = ('127.0.0.1', 'localhost',)
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'your_email_host'
+EMAIL_HOST_PASSWORD = 'your_email_password'
+EMAIL_HOST_USER = 'your_email_user'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
 
 # django-registration options
 ACCOUNT_ACTIVATION_DAYS = 1
