@@ -10,7 +10,7 @@ urlpatterns = [
     # custom url from django-registration
     path('activate/complete', TemplateView.as_view(template_name='django_registration/activation_complete.html'),
          name='django_registration_activation_complete'),
-    path('activate/<str:activation_key>/', registration_views.ActivationView.as_view(),
+    path('activate/<activation_key>/', registration_views.ActivationView.as_view(),
          name='django_registration_activate'),
     path('signup/', views.CustomRegistrationView.as_view(), name='django_registration_register'),
     path('signup/complete/', TemplateView.as_view(template_name='django_registration/registration_complete.html'),
