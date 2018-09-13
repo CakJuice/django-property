@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'widget_tweaks',
-    'django_registration',
+    # 'django_registration',
     'base',
 ]
 
