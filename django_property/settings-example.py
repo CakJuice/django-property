@@ -167,5 +167,8 @@ EMAIL_HOST_USER = 'your_email_user'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 
-# django-registration options
+# set user as admin
+ADMIN_USER_ID = 1
+
+# user signup options
 ACCOUNT_ACTIVATION_DAYS = 1
