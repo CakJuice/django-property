@@ -6,6 +6,7 @@ class UserActivation(models.Model):
     user_id = models.ForeignKey(User, on_delete='CASCADE', related_name='activations', verbose_name="User")
     activation_key = models.CharField(max_length=32, verbose_name="Activation Key")
     expire = models.DateTimeField(verbose_name="Expire")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
 
     @classmethod
     def send_user_activation(cls, user):

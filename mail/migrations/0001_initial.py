@@ -14,28 +14,25 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='SiteSetting',
+            name='Mail',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created At')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated At')),
-                ('key', models.CharField(max_length=64, unique=True, verbose_name='Key')),
-                ('value', models.CharField(blank=True, max_length=200, null=True, verbose_name='Value')),
+                ('email_from', models.CharField(max_length=250, verbose_name='From')),
+                ('email_to', models.TextField(verbose_name='To')),
+                ('email_cc', models.TextField(verbose_name='CC')),
+                ('subject', models.CharField(max_length=250, verbose_name='Subject')),
+                ('body', models.TextField(verbose_name='Body')),
+                ('attachment', models.TextField(verbose_name='Attachment')),
+                ('state', models.CharField(choices=[('outgoing', 'Outgoing'), ('sent', 'Sent'), ('received', 'Received'), ('exception', 'Delivery Failed'), ('cancel', 'Cancelled')], max_length=24)),
+                ('send_at', models.DateTimeField(blank=True, null=True, verbose_name='Send At')),
                 ('created_by', models.ForeignKey(on_delete='RESTRICT', related_name='+', to=settings.AUTH_USER_MODEL, verbose_name='Created By')),
                 ('updated_by', models.ForeignKey(on_delete='RESTRICT', related_name='+', to=settings.AUTH_USER_MODEL, verbose_name='Updated By')),
+                ('user_id', models.ForeignKey(on_delete='CASCADE', related_name='mails', to=settings.AUTH_USER_MODEL, verbose_name='User')),
             ],
             options={
                 'abstract': False,
             },
-        ),
-        migrations.CreateModel(
-            name='UserActivation',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('activation_key', models.CharField(max_length=32, verbose_name='Activation Key')),
-                ('expire', models.DateTimeField(verbose_name='Expire')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created At')),
-                ('user_id', models.ForeignKey(on_delete='CASCADE', related_name='activations', to=settings.AUTH_USER_MODEL, verbose_name='User')),
-            ],
         ),
     ]
