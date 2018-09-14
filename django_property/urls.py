@@ -19,8 +19,9 @@ from django.urls import path, include
 
 urlpatterns = [
     path('', include('base.urls')),
-    path('', include('django.contrib.auth.urls')),
+    # path('', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
+    path('mail/', include('mail.urls')),
 ]
 
 if settings.DEBUG:

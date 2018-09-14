@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'widget_tweaks',
-    # 'django_registration',
     'base',
+    'mail',
 ]
 
 MIDDLEWARE = [
