@@ -16,3 +16,9 @@ class BaseAdmin(admin.ModelAdmin):
 class SiteSettingAdmin(BaseAdmin):
     fields = ('key', 'value')
     list_display = ('key', 'value')
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        from django.core.cache import cache
+        if cache.has_key('settings'):
+            cache.delete('settings')
