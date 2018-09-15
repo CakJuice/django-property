@@ -1,7 +1,7 @@
+from django.contrib.auth import login as auth_login
 from django.shortcuts import render, redirect
 
 from .forms import SignupForm
-from .models import UserActivation
 
 
 # @cache_page(settings.CACHE_TTL)
@@ -13,10 +13,13 @@ def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
-            UserActivation.send_user_activation(user)
+            # user = form.save(commit=False)
+            # user.is_active = False
+            # user.save()
+            # UserActivation.send_user_activation(user)
+            user = form.save()
+            auth_login(request, user)
+            return redirect('homepage')
     else:
         form = SignupForm()
     return render(request, 'base/signup.html', context={'form': form})
