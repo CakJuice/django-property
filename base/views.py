@@ -19,7 +19,7 @@ def signup(request):
             # UserActivation.send_user_activation(user)
             user = form.save()
             auth_login(request, user)
-            redirect('homepage')
+            return redirect('homepage')
     else:
         form = SignupForm()
     return render(request, 'base/signup.html', context={'form': form})
