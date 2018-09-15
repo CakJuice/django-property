@@ -1,0 +1,39 @@
+{% load widget_tweaks %}
+{% load form_tags %}
+
+<div class="form-group">
+    {{ field.label_tag }}
+
+    {% if form.is_bound %}
+        {% if field.errors %}
+            {% if disabled %}
+                {% render_field field class=field|input_class disabled='' %}
+            {% else %}
+                {% render_field field class=field|input_class %}
+            {% endif %}
+            {% for error in field.errors %}
+                <div class="invalid-feedback">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        {% else %}
+            {% if disabled %}
+                {% render_field field class="form-control is-valid" disabled='' %}
+            {% else %}
+                {% render_field field class="form-control is-valid" %}
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {% if disabled %}
+            {% render_field field class="form-control" disabled='' %}
+        {% else %}
+            {% render_field field class="form-control" %}
+        {% endif %}
+    {% endif %}
+
+    {% if field.help_text %}
+        <small class="form-text text-muted">
+            {{ field.help_text|safe }}
+        </small>
+    {% endif %}
+</div>

@@ -11,4 +11,7 @@ def mail_create(request):
         form = MailForm(request.POST)
     else:
         form = MailForm()
+
+    for field in form:
+        print(field)
     return render(request, 'mail/mail_create.html', context={'form': form})

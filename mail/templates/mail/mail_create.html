@@ -1,12 +1,20 @@
-{% extends 'card.html' %}
+{% extends 'main_layout.html' %}
 
 {% block title %}Create Mail{% endblock %}
 
-{% block card_body %}
-    <h3 class="card-title">Mail Create</h3>
-    <form method="POST" novalidate>
-        {% csrf_token %}
-        {% include 'includes/form.html' %}
-        <button type="submit" class="btn btn-primary">Save</button>
-    </form>
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Email</h3>
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        {% include 'includes/form.html' %}
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
