@@ -9,4 +9,4 @@ class MailForm(forms.ModelForm):
 
     class Meta:
         model = Mail
-        fields = ('email_from', 'email_to', 'email_cc', 'subject', 'body', 'attachment', 'state', 'send_at')
+        fields = ('email_from', 'email_to', 'email_cc', 'subject', 'body', 'state', 'send_at')
