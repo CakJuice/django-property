@@ -11,6 +11,10 @@
                     <form method="POST" novalidate>
                         {% csrf_token %}
                         {% include 'includes/form.html' %}
+                        <input type="file" id="file_attachment" name="attachment" class="hidden">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-success" id="btn_mail_attachment">Add Attachment</button>
+                        </div>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>
                 </div>
@@ -22,6 +26,18 @@
 {% block extra_script %}
     <script type="text/javascript">
         $(function() {
+            $('#btn_mail_attachment').click(function() {
+                $('#file_attachment').trigger('click');
+            });
+
+            $('#file_attachment').change(function() {
+                $.post('/mail/attachment/create/', {
+                    'attachment': $(this).val(),
+                }).done(function() {
+                    console.log('upload done');
+                })
+            });
+
             $('#id_body').trumbowyg({
                 btns: [
                     ['viewHTML'],

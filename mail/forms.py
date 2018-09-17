@@ -1,6 +1,12 @@
 from django import forms
 
-from .models import Mail
+from .models import Attachment, Mail
+
+
+class AttachmentForm(forms.ModelForm):
+    class Meta:
+        model = Attachment
+        fields = ('attachment',)
 
 
 class MailForm(forms.ModelForm):
