@@ -106,8 +106,7 @@ venv.bak/
 # pycharm
 .idea/
 
-# sqlite3
-*.sqlite3
-*.db
+# media-file
+media/
 
 settings.py

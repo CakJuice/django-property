@@ -21,7 +21,9 @@ def attachment_create(request):
         form = AttachmentForm(request.POST, request.FILES)
         print(request.FILES)
         if form.is_valid():
-            form.save()
+            attachment = form.save(commit=False)
+            attachment.created_by = request.user
+            attachment.save()
             return JsonResponse({'status': 1})
         else:
             return JsonResponse({'status': 0})

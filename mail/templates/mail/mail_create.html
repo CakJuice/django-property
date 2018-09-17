@@ -30,12 +30,20 @@
                 $('#file_attachment').trigger('click');
             });
 
+            var fileInput = document.getElementById('file_attachment');
             $('#file_attachment').change(function() {
-                $.post('/mail/attachment/create/', {
-                    'attachment': $(this).val(),
-                }).done(function() {
-                    console.log('upload done');
-                })
+                var formData = new FormData();
+                formData.append('attachment', this.files[0]);
+                $.ajax({
+                    method: 'POST',
+                    url: '/mail/attachment/create/',
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    data: formData,
+                }).done(function(response) {
+                    console.log(response);
+                });
             });
 
             $('#id_body').trumbowyg({
