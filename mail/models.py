@@ -3,6 +3,7 @@ from time import time
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.mail import EmailMessage
 
 from base.models import BaseModel
 
@@ -46,3 +47,25 @@ class Mail(BaseModel):
 
     class Meta:
         ordering = ('created_at',)
+
+    def send_mail(self):
+        attachments = []
+        for attach in self.attachment_ids:
+            attachments.append(attach.attachment)
+
+        try:
+            email = EmailMessage(
+                subject=self.subject,
+                body=self.body,
+                from_email=self.email_from,
+                to=self.email_to.split(','),
+                cc=self.email_cc.split(','),
+                attachments=attachments,
+            )
+            email.content_subtype = 'html'
+            email.send()
+            self.state = 'sent'
+        except Exception as e:
+            self.state = 'exception'
+
+        self.save()
