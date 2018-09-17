@@ -3,23 +3,21 @@ from time import time
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.deconstruct import deconstructible
 
 from base.models import BaseModel
 
 
-# Create your models here.
-class MailAttachment(models.Model):
-    @deconstructible
-    class RenameAttachment:
-        def __call__(self, instance, filename):
-            upload_to = 'mail_attachment/'
-            ext = filename.split('.')[-1]
-            new_filename = filename.replace('.%s' % (ext,), '')
-            new_path = '%s.%d.%s' % (new_filename, round(time() * 1000), ext,)
-            return os.path.join(upload_to, new_path)
+def rename_attachment(instance, filename: str):
+    upload_to = 'mail_attachment/'
+    ext = filename.split('.')[-1]
+    new_filename = filename.replace('.%s' % (ext,), '')
+    new_path = '%s.%d.%s' % (new_filename, round(time() * 1000), ext,)
+    return os.path.join(upload_to, new_path)
 
-    attachment = models.FileField(upload_to=RenameAttachment(), max_length=200000)
+
+# Create your models here.
+class Attachment(models.Model):
+    attachment = models.FileField(upload_to=rename_attachment, max_length=200000)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete='RESTRICT', related_name='+')
 
@@ -33,7 +31,7 @@ class Mail(BaseModel):
     email_cc = models.TextField(verbose_name="CC", null=True, blank=True)
     subject = models.CharField(max_length=250, verbose_name="Subject")
     body = models.TextField(verbose_name="Body")
-    attachment_ids = models.ManyToManyField(to=MailAttachment, related_name='mails')
+    attachment_ids = models.ManyToManyField(to=Attachment, related_name='mails')
     state = models.CharField(max_length=24, choices=(
         ('outgoing', "Outgoing"),
         ('sent', "Sent"),

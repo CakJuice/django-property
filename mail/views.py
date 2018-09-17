@@ -10,7 +10,7 @@ def mail_create(request):
     if request.method == 'POST':
         form = MailForm(request.POST)
     else:
-        form = MailForm()
+        form = MailForm(initial={'email_from': request.user.email})
 
     for field in form:
         print(field)
