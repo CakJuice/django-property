@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 from django.http.response import JsonResponse
+from django.shortcuts import render
 
 from .forms import MailForm, AttachmentForm
 
@@ -19,12 +19,11 @@ def mail_create(request):
 def attachment_create(request):
     if request.method == 'POST' and request.is_ajax():
         form = AttachmentForm(request.POST, request.FILES)
-        print(request.FILES)
         if form.is_valid():
             attachment = form.save(commit=False)
             attachment.created_by = request.user
             attachment.save()
-            return JsonResponse({'status': 1})
+            return JsonResponse({'status': 1, 'id': attachment.id, 'name': attachment.name})
         else:
             return JsonResponse({'status': 0})
     return JsonResponse({})

@@ -6,7 +6,7 @@ from .models import Attachment, Mail
 class AttachmentForm(forms.ModelForm):
     class Meta:
         model = Attachment
-        fields = ('attachment',)
+        fields = ('name', 'attachment',)
 
 
 class MailForm(forms.ModelForm):
