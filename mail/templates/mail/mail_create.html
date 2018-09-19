@@ -18,8 +18,8 @@
                                     <button type="button" class="btn btn-success" id="btn_mail_attachment">Add Attachment</button>
                                 </div>
                                 <div class="col-sm-8">
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 0"
+                                    <div class="progress hidden" id="progress-container">
+                                        <div class="progress-bar" id="progress-bar" role="progressbar" style="width: 0"
                                              aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </div>
@@ -36,24 +36,48 @@
 
 {% block extra_script %}
     <script type="text/javascript">
+        var isUpload = false;
 
         function appendAttachment(data) {
             var attachmentUI = `<div class="col-sm-6">${data.name}</div>`;
             $('#attachment-container').append(attachmentUI);
         }
 
-        $(function() {
-            var attachmentIdx = 0;
+        function progressStart() {
+            progressRun(0);
+            $('#progress-container').show();
+        }
 
+        function progressDone() {
+            isUpload = false;
+            setTimeout(function() {
+                if (!isUpload) {
+                    $('#progress-container').fadeOut(500);
+                    isUpload = false;
+                }
+            }, 800);
+        }
+
+        function progressRun(value) {
+            $('#progress-bar').css('width', `${value}%`);
+            $('#progress-bar').prop('aria-valuenow', value);
+        }
+
+        $(function() {
             $('#btn_mail_attachment').click(function() {
-                $('#file_attachment').trigger('click');
+                $('#file_attachment').click();
             });
 
             $('#file_attachment').change(function() {
+                if ($('#progress-container').hasClass('hidden')) {
+                    $('#progress-container').removeClass('hidden');
+                }
                 var fileInput = $(this);
                 var formData = new FormData();
                 formData.append('name', this.files[0].name);
                 formData.append('attachment', this.files[0]);
+                progressStart();
+                isUpload = true;
                 $.ajax({
                     method: 'POST',
                     url: "{% url 'attachment_create' %}",
@@ -73,15 +97,16 @@
                         jqXHR.upload.addEventListener('progress', function(event) {
                             if (event.lengthComputable) {
                                 var percentComplete = Math.round((event.loaded * 100) / event.total);
-                                console.log('Upload percent', percentComplete);
+                                progressRun(percentComplete);
                             }
                         }, false);
 
                         return jqXHR;
                     },
                 }).done(function(response) {
-                    console.log(response);
                     fileInput.val(null);
+                    progressDone();
+                    appendAttachment(response);
                 });
             });
 
