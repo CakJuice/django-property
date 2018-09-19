@@ -13,17 +13,7 @@
                         {% include 'includes/form.html' %}
                         <input type="file" id="file_attachment" name="attachment" class="hidden">
                         <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <button type="button" class="btn btn-success" id="btn_mail_attachment">Add Attachment</button>
-                                </div>
-                                <div class="col-sm-8">
-                                    <div class="progress hidden" id="progress-container">
-                                        <div class="progress-bar" id="progress-bar" role="progressbar" style="width: 0"
-                                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
+                            <button type="button" class="btn btn-success" id="btn_mail_attachment">Add Attachment</button>
                         </div>
                         <div class="form-group" id="attachment-container"></div>
                         <button type="submit" class="btn btn-primary">Save</button>
@@ -36,48 +26,68 @@
 
 {% block extra_script %}
     <script type="text/javascript">
-        var isUpload = false;
+        var attachmentIdx = 0;
 
-        function appendAttachment(data) {
-            var attachmentUI = `<div class="col-sm-6">${data.name}</div>`;
+        function appendAttachment() {
+            var attachmentUI = getAttachmentContainer();
             $('#attachment-container').append(attachmentUI);
         }
 
-        function progressStart() {
-            progressRun(0);
-            $('#progress-container').show();
+        function getAttachmentContainer() {
+            var attachmentUI = `
+            <div class="row">
+                <div class="col-sm-9" id="attachment-info-${attachmentIdx}"></div>
+                <div class="col-sm-3">
+                    <div class="progress" id="progress-container-${attachmentIdx}">
+                        <div class="progress-bar" id="progress-bar-${attachmentIdx}" role="progressbar" style="width: 0"
+                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>`;
+            return attachmentUI;
         }
 
-        function progressDone() {
-            isUpload = false;
+        function progressDone(progressContainer) {
             setTimeout(function() {
-                if (!isUpload) {
-                    $('#progress-container').fadeOut(500);
-                    isUpload = false;
-                }
+                progressContainer.fadeOut(500);
             }, 800);
         }
 
-        function progressRun(value) {
-            $('#progress-bar').css('width', `${value}%`);
-            $('#progress-bar').prop('aria-valuenow', value);
+        function progressRun(progressBar, value) {
+            progressBar.css('width', `${value}%`);
+            progressBar.prop('aria-valuenow', value);
         }
 
         $(function() {
+            $('#id_body').trumbowyg({
+                btns: [
+                    ['viewHTML'],
+                    ['undo', 'redo'], // Only supported in Blink browsers
+                    ['strong', 'em', 'del'],
+                    ['superscript', 'subscript'],
+                ]
+            });
+
             $('#btn_mail_attachment').click(function() {
                 $('#file_attachment').click();
             });
 
             $('#file_attachment').change(function() {
-                if ($('#progress-container').hasClass('hidden')) {
-                    $('#progress-container').removeClass('hidden');
-                }
-                var fileInput = $(this);
                 var formData = new FormData();
                 formData.append('name', this.files[0].name);
                 formData.append('attachment', this.files[0]);
-                progressStart();
-                isUpload = true;
+
+                var fileInput = $(this);
+                appendAttachment();
+                
+                fileInput.attachmentIdx = attachmentIdx;
+                fileInput.attachmentInfo = $(`#attachment-info-${attachmentIdx}`);
+                fileInput.progressContainer = $(`#progress-container-${attachmentIdx}`);
+                fileInput.progressBar = $(`#progress-bar-${attachmentIdx}`);
+                fileInput.attachmentInfo.append(this.files[0].name);
+                
+                attachmentIdx++;
+                
                 $.ajax({
                     method: 'POST',
                     url: "{% url 'attachment_create' %}",
@@ -97,7 +107,7 @@
                         jqXHR.upload.addEventListener('progress', function(event) {
                             if (event.lengthComputable) {
                                 var percentComplete = Math.round((event.loaded * 100) / event.total);
-                                progressRun(percentComplete);
+                                progressRun(fileInput.progressBar, percentComplete);
                             }
                         }, false);
 
@@ -105,18 +115,8 @@
                     },
                 }).done(function(response) {
                     fileInput.val(null);
-                    progressDone();
-                    appendAttachment(response);
+                    progressDone(fileInput.progressContainer);
                 });
-            });
-
-            $('#id_body').trumbowyg({
-                btns: [
-                    ['viewHTML'],
-                    ['undo', 'redo'], // Only supported in Blink browsers
-                    ['strong', 'em', 'del'],
-                    ['superscript', 'subscript'],
-                ]
             });
         });
     </script>
