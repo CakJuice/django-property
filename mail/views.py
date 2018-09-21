@@ -10,6 +10,12 @@ from .forms import MailForm, AttachmentForm
 def mail_create(request):
     if request.method == 'POST':
         form = MailForm(request.POST)
+        if form.is_valid():
+            mail = form.save(commit=False)
+            mail.created_by = request.user
+            mail.updated_by = request.user
+            mail.save()
+            form = MailForm(initial={'email_from': request.user.email})
     else:
         form = MailForm(initial={'email_from': request.user.email})
     return render(request, 'mail/mail_create.html', context={'form': form})
